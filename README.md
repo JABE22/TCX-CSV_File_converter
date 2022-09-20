@@ -1,4 +1,4 @@
-Design Workshop Project 2022
+**Design Workshop Project 2022**
 # TCX to CSV data parcer
 
 Garmin TCX data to CSV data parser algorithm
