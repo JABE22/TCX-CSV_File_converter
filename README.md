@@ -42,4 +42,4 @@ In order to successfully run the code there are some pre-requisitions:
  https://www.gpxsee.org/
  
  ## NOTE
-  This project is only for professional use to convert huge amount of data automatically to CSV format to be analysed using Machine Learning, Neaural Networks and etc. tools to investigate data.
+  This project is only for professional use to convert huge amount of data automatically to CSV format to be analysed using Machine Learning, Neural Networks and etc. tools to investigate data.
