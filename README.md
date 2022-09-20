@@ -1,4 +1,6 @@
-# Design Workshop Project
+Design Workshop Project 2022
+# TCX to CSV data parcer
+
 Garmin TCX data to CSV data parser algorithm
 
 Implemented as an independent study work at Ural Federal University
