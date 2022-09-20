@@ -6,6 +6,10 @@ Implemented as an independent study work at Ural Federal University
 
 Scripts can be used to transform certain features from Garmin TCX activity data format to CSV for further processing and analysis.
 
+## TCXReader
+Actual parcer for .tcx files is copied from the source. (However, project is not dependent on that library since it includes necessary code)
+https://github.com/alenrajsp/tcxreader
+
 ## How to use
 
 In order to successfully run the code there are some pre-requisitions:
