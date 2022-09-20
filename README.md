@@ -3,7 +3,9 @@
 
 Garmin TCX data to CSV data parser algorithm
 
-Implemented as an independent study work at Ural Federal University
+Implemented as an independent study work in Data Science at Ural Federal University. 
+The project is for learning or study purposes only and not intended to be used without deep understanding about the Python code. However, you may save some time to have it as a sceleton to start your own project.
+
 ## Description
 
 Scripts can be used to transform certain features from Garmin TCX activity data format to CSV for further processing and analysis.
