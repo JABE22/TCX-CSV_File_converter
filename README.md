@@ -1,6 +1,7 @@
-# DesignWorkshopProject
+# Design Workshop Project
 Garmin TCX data to CSV data parser algorithm
 
+Implemented as a independent study work at Ural Federal University
 ## Description
 
 Scripts can be used to transform certain features from Garmin TCX activity data format to CSV for further processing and analysis.
