@@ -15,7 +15,9 @@ def tcx_trackpoints_to_numpy(file_path, column_types):
     :return: Two dimensional NumPy array containing all the rows and columns from 'file_path'
     """
     tcx_reader = TCXReader()
-    data: TCXTrackPoint = tcx_reader.read(file_path)
+    data: TCXExercise = tcx_reader.read(file_path)
+    sport = data.activity_type
+    print("Getting trackpoints for activity type: %s" % sport)
     trackpoints = data.trackpoints
     print("The file has " + str(len(trackpoints)) + " trackpoints")
     # Creates empty numpy array with 9 columns
@@ -26,7 +28,7 @@ def tcx_trackpoints_to_numpy(file_path, column_types):
                    tp.distance, tp.hr_value, tp.TPX_speed, tp.cadence, tp.watts]
         tp_array = np.append(tp_array, np.array([datarow]), axis=0)
 
-    return tp_array
+    return (sport, tp_array)
 
 
 def tcx_exercises_to_csv(tcx_folder, csv_folder, column_types, column_names, exers):
@@ -39,6 +41,7 @@ def tcx_exercises_to_csv(tcx_folder, csv_folder, column_types, column_names, exe
     :return tp_array: Array of activities in a dimension based on the size of parameter column_types
     """
     tcx_files = Path(tcx_folder).glob('*.tcx')
+    activity_types = np.array([])
     file_number = 1
 
     if exers == 0:
@@ -51,11 +54,13 @@ def tcx_exercises_to_csv(tcx_folder, csv_folder, column_types, column_names, exe
             # Data instance
             r_path_filename = tcx_folder + child.name
             w_path_filename = csv_folder + child.name
-            save_tcx_to_csv(r_path_filename, w_path_filename, column_types, column_names)
+            sport = save_tcx_to_csv(r_path_filename, w_path_filename, column_types, column_names)
+            activity_types = np.append(activity_types, sport)
             file_number = file_number + 1
         else:
             break
 
+    return activity_types
 
 def save_tcx_to_csv(read, write, types, names):
     """
@@ -66,10 +71,13 @@ def save_tcx_to_csv(read, write, types, names):
     :param types: Data variable types (float, int, datetime, str).
     :param names: Data variable names for .csv header row. Values separated by semicolon.
     """
-    tp_array = tcx_trackpoints_to_numpy(read, types)
+    sport, tp_array = tcx_trackpoints_to_numpy(read, types)
     write = str(Path(write).with_suffix('.csv'))
     print("Read from: " + read + "\nWrite to: " + write)
     np.savetxt(write, tp_array, delimiter=";", fmt='% s', header=names, comments="")
+
+    # Let's return activity type since we cannot handle it here
+    return sport
 
 
 def save_tcxset_to_csv(root, read, write, types, names, exers=0):
@@ -82,5 +90,9 @@ def save_tcxset_to_csv(root, read, write, types, names, exers=0):
     :param names: Data variable names for .csv header row. Values separated by semicolon.
     :param rows: Number of rows to read from .tcx set
     """
-    tcx_exercises_to_csv(root + read, root + write, types, names, exers)
+    activity_types = tcx_exercises_to_csv(root + read, root + write, types, names, exers)
+    print(activity_types)
+    write = str(Path(root + write + "activity_types.csv"))
+    print("\nSaving activity types to: " + write)
+    np.savetxt(write, activity_types, delimiter=";", fmt='% s', header="activity_name", comments="")
 

@@ -2,12 +2,104 @@ import os
 import xml.etree.ElementTree as ET
 import maya
 import datetime
-from tcxreader.tcx_track_point import TCXTrackPoint
-from tcxreader.tcx_exercise import TCXExercise
+'''
+Use may also try libraries directly from the tcxreader (e.g.: pip install tcxreader) 
+Here required functions are copy pasted in order to make some case specific modifications to tcxreader.
+For example, some feature names may change and in the TCXExercise object of .tcx file by Garmin and tcxreader lacks support for changes.
+'''
+#from tcxreader.tcx_track_point import TCXTrackPoint
+#from tcxreader.tcx_exercise import TCXExercise
 from pathlib import Path
 
 GARMIN_XML_SCHEMA = '{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}'
 GARMIN_XML_EXTENSIONS = '{http://www.garmin.com/xmlschemas/ActivityExtension/v2}'
+
+class TCXTrackPoint(object):
+    def __init__(self, longitude: float = None, latitude: float = None, elevation: float = None, time=None,
+                 distance=None, hr_value: int = None, cadence=None, TPX_speed: float = None, watts: float = None):
+        '''
+        :param longitude: Longitude of the trackpoint
+        :param latitude: Latitude of the trackpoint
+        :param elevation: Elevation of the trackpoint
+        :param time: Datetime of the trackpoint
+        :param distance: Total distance traveled at the current trackpoint
+        :param hr_value: Heart rate value at the trackpoint
+        :param cadence: Cadence at the trackpoint
+        :param TPX_speed: Current speed (extension), not necessarily OK!
+        :param watts: Watts usage at the trackpoint
+        '''
+        self.longitude = longitude
+        self.latitude = latitude
+        self.elevation = elevation
+        self.time = time
+        self.distance = distance
+        self.hr_value = hr_value
+        self.cadence = cadence
+        self.watts = watts
+        self.TPX_speed = TPX_speed
+
+    def __str__(self):
+        (longitude, latitude, elevation) = (self.longitude, self.latitude, self.elevation)
+        time = self.time
+        distance = self.distance
+        (hr_value, cadence, watts) = (self.hr_value, self.cadence, self.watts)
+        TPX_speed = self.TPX_speed
+
+        return f'{time} | lat:{latitude}, lon:{longitude} elev:{elevation} | m:{distance} | ' \
+               f'hr:{hr_value}, cadence:{cadence}, watt:{watts}, TPX_speed:{TPX_speed}'
+
+    def __unicode__(self):
+        return self.__str__()
+
+
+class TCXExercise:
+    def __init__(self, trackpoints: [TCXTrackPoint] = None, activity_type: str = None, calories: int = None,
+                 hr_avg: float = None, hr_max: float = None, hr_min=None, max_speed: float = None,
+                 avg_speed: float = None, start_time: datetime = None, end_time: datetime = None,
+                 duration: float = None, cadence_avg: float = None, cadence_max: float = None, ascent: float = None,
+                 descent: float = None, distance: float = None, altitude_avg: float = None, altitude_min: float = None,
+                 altitude_max: float = None):
+        """
+        :param trackpoints: List of TCXTrackPoint objects
+        :param activity_type: sport string
+        :param calories: total calories used in an exercise
+        :param hr_avg: maxiumum heartrate achieved during the exercise
+        :param hr_max: average heartrate during the exercise
+        :param hr_min: minimum heartrate achieved during the exercise
+        :param avg_speed: average speed during the exercise (km/h)
+        :param start_time: datetime of exercise start
+        :param end_time: datetime of exercise end
+        :param duration: duration of exercise in seconds
+        :param cadence_avg: average cadence during the exercise
+        :param cadence_max: maximum cadence during the exercise
+        :param ascent: total meters of ascent during the exercise
+        :param descent: total meters of descent during the exercise
+        :param distance: total distance of exercise in meters
+        :param altitude_avg: average altitude in meters
+        :param altitude_min: minimum altitude during the exercise
+        :param altitude_max: maxiumum altitude during the exersice
+        """
+
+        self.trackpoints = trackpoints
+        self.activity_type = activity_type
+        self.calories = calories
+        self.hr_avg = hr_avg
+        self.hr_max = hr_max
+        self.hr_min = hr_min
+        self.duration = duration
+        self.max_speed = max_speed
+        self.avg_speed = avg_speed
+        self.start_time = start_time
+        self.end_time = end_time
+        self.cadence_avg = cadence_avg
+        self.cadence_max = cadence_max
+        self.ascent = ascent
+        self.descent = descent
+        self.distance = distance
+        self.altitude_avg = altitude_avg
+        self.altitude_min = altitude_min
+        self.altitude_max = altitude_max
+
 
 
 class TCXReader:
@@ -131,91 +223,3 @@ class TCXReader:
             tcx.avg_speed = tcx.distance / tcx.duration * 3.6
 
         return tcx
-
-
-class TCXTrackPoint(object):
-    def __init__(self, longitude: float = None, latitude: float = None, elevation: float = None, time=None,
-                 distance=None, hr_value: int = None, cadence=None, TPX_speed: float = None, watts: float = None):
-        '''
-        :param longitude: Longitude of the trackpoint
-        :param latitude: Latitude of the trackpoint
-        :param elevation: Elevation of the trackpoint
-        :param time: Datetime of the trackpoint
-        :param distance: Total distance traveled at the current trackpoint
-        :param hr_value: Heart rate value at the trackpoint
-        :param cadence: Cadence at the trackpoint
-        :param TPX_speed: Current speed (extension), not necessarily OK!
-        :param watts: Watts usage at the trackpoint
-        '''
-        self.longitude = longitude
-        self.latitude = latitude
-        self.elevation = elevation
-        self.time = time
-        self.distance = distance
-        self.hr_value = hr_value
-        self.cadence = cadence
-        self.watts = watts
-        self.TPX_speed = TPX_speed
-
-    def __str__(self):
-        (longitude, latitude, elevation) = (self.longitude, self.latitude, self.elevation)
-        time = self.time
-        distance = self.distance
-        (hr_value, cadence, watts) = (self.hr_value, self.cadence, self.watts)
-        TPX_speed = self.TPX_speed
-
-        return f'{time} | lat:{latitude}, lon:{longitude} elev:{elevation} | m:{distance} | ' \
-               f'hr:{hr_value}, cadence:{cadence}, watt:{watts}, TPX_speed:{TPX_speed}'
-
-    def __unicode__(self):
-        return self.__str__()
-
-
-class TCXExercise:
-    def __init__(self, trackpoints: [TCXTrackPoint] = None, activity_type: str = None, calories: int = None,
-                 hr_avg: float = None, hr_max: float = None, hr_min=None, max_speed: float = None,
-                 avg_speed: float = None, start_time: datetime = None, end_time: datetime = None,
-                 duration: float = None, cadence_avg: float = None, cadence_max: float = None, ascent: float = None,
-                 descent: float = None, distance: float = None, altitude_avg: float = None, altitude_min: float = None,
-                 altitude_max: float = None):
-        """
-        :param trackpoints: List of TCXTrackPoint objects
-        :param activity_type: sport string
-        :param calories: total calories used in an exercise
-        :param hr_avg: maxiumum heartrate achieved during the exercise
-        :param hr_max: average heartrate during the exercise
-        :param hr_min: minimum heartrate achieved during the exercise
-        :param avg_speed: average speed during the exercise (km/h)
-        :param start_time: datetime of exercise start
-        :param end_time: datetime of exercise end
-        :param duration: duration of exercise in seconds
-        :param cadence_avg: average cadence during the exercise
-        :param cadence_max: maximum cadence during the exercise
-        :param ascent: total meters of ascent during the exercise
-        :param descent: total meters of descent during the exercise
-        :param distance: total distance of exercise in meters
-        :param altitude_avg: average altitude in meters
-        :param altitude_min: minimum altitude during the exercise
-        :param altitude_max: maxiumum altitude during the exersice
-        """
-
-        self.trackpoints = trackpoints
-        self.activity_type = activity_type
-        self.calories = calories
-        self.hr_avg = hr_avg
-        self.hr_max = hr_max
-        self.hr_min = hr_min
-        self.duration = duration
-        self.max_speed = max_speed
-        self.avg_speed = avg_speed
-        self.start_time = start_time
-        self.end_time = end_time
-        self.cadence_avg = cadence_avg
-        self.cadence_max = cadence_max
-        self.ascent = ascent
-        self.descent = descent
-        self.distance = distance
-        self.altitude_avg = altitude_avg
-        self.altitude_min = altitude_min
-        self.altitude_max = altitude_max
-
