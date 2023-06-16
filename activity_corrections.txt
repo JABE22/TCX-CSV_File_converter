@@ -1,0 +1,6 @@
+activity_5182094949.tcx, Other => Biking, 2020-07-03T09:55:34.000Z, "Multi-Sport activity Biking-Running-Biking, wherein 2 biking activities combined and therefore activity categorized as 'Other'-type"
+activity_5330052543.tcx, Other => Multi-Sport, 2020-08-03T16:01:50.000Z, "Multi-Sport activity Biking-Running-Biking, wherein all combined and therefore activity categorized as 'Other'-type"
+activity_5414776592.tcx, Other => Multi-Sport, 2020-08-20T14:18:58.000Z, "Multi-Sport activity Biking-Running-Biking, wherein all combined and therefore activity categorized as 'Other'-type"
+activity_6722877736.tcx, Other => Multi-Sport, 2020-08-20T14:18:58.000Z, "Multi-Sport activity Biking-Running-Biking, wherein all combined and therefore activity categorized as 'Other'-type"
+activity_6761489799.tcx, Other => Multi-Sport, 2020-08-20T14:18:58.000Z, "Multi-Sport activity Biking-Running-Biking, wherein all combined and therefore activity categorized as 'Other'-type"
+activity_6791659583.tcx, Other => Multi-Sport, 2020-08-20T14:18:58.000Z, "Multi-Sport activity Biking-Running-Biking, wherein all combined and therefore activity categorized as 'Other'-type"
