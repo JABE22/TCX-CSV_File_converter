@@ -36,8 +36,8 @@ In order to successfully run the code there are some pre-requisitions:
 
 Run this program using one of the following scripts:
 
-* `console> python tcx_to_csv.py -s VO2-max_testrun.tcx`
-* `console> python tcx_to_csv.py -m DATA/`
+* `python tcx_to_csv.py -s [path/filename].tcx`
+* `python tcx_to_csv.py -m [DATA/]`
  
  ## Useful related information
  
