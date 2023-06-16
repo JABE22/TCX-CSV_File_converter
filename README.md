@@ -23,7 +23,7 @@ In order to successfully run the code there are some pre-requisitions:
   - To convert one .TCX file, give arguments: **[-s] [filename].tcx**
     - File will be read from the location **DATA/TCXDATA/[path_filename].tcx**
     - File will be written to the location **DATA/CSVDATA/TEST/[filename].csv** ()
-  - To convert a set of .TCX files, give arguments: **[-m] [read_from_path]**
+  - To convert a set of .TCX files, give arguments: **[-m] [read_from_root_path]**
     - Set of TCX files will be saved with same name as .tcx files (except .tcx -> .csv)
     - Default data locations are:
       - Read from: DATA/TCXDATA/SET1/
@@ -37,7 +37,7 @@ In order to successfully run the code there are some pre-requisitions:
 Run this program using one of the following scripts:
 
 * `python tcx_to_csv.py -s [path/filename].tcx`
-* `python tcx_to_csv.py -m [DATA/]`
+* `python tcx_to_csv.py -m [DATA]/`
  
  ## Useful related information
  
