@@ -24,7 +24,10 @@ def tcx_trackpoints_to_numpy(file_path: str, column_types: [(str,type)]) -> tupl
     tcx_reader = TCXReader()
     data: TCXExercise = tcx_reader.read(file_path)
     sport = data.activity_type
+    device = data.device
+    devID = data.devID
     print("Getting trackpoints for activity type: %s" % sport)
+    print("Activity recording device: %s" % device)
     trackpoints = data.trackpoints
     print("The file has " + str(len(trackpoints)) + " trackpoints")
     # Creates empty numpy array with 9 columns
@@ -35,7 +38,7 @@ def tcx_trackpoints_to_numpy(file_path: str, column_types: [(str,type)]) -> tupl
                    tp.distance, tp.hr_value, tp.TPX_speed, tp.cadence, tp.watts]
         tp_array = np.append(tp_array, np.array([datarow]), axis=0)
 
-    return (sport, tp_array)
+    return (sport, device, devID, tp_array)
 
 
 def tcx_exercises_to_csv(tcx_folder: str, csv_folder: str, column_types: [(str,type)], column_names: str, exers: int) -> list:
@@ -50,7 +53,7 @@ def tcx_exercises_to_csv(tcx_folder: str, csv_folder: str, column_types: [(str,t
     @return: Activity types as list of strings in a size of given function parameter "exers" for classification tasks
     """
     tcx_files = Path(tcx_folder).glob('*.tcx')
-    activity_types = np.array([])
+    activity_types = np.zeros(shape=(0,3))
     file_number = 1
 
     if exers == 0:
@@ -63,8 +66,8 @@ def tcx_exercises_to_csv(tcx_folder: str, csv_folder: str, column_types: [(str,t
             # Data instance
             r_path_filename = tcx_folder + child.name
             w_path_filename = csv_folder + child.name
-            sport = save_tcx_to_csv(r_path_filename, w_path_filename, column_types, column_names)
-            activity_types = np.append(activity_types, sport)
+            sport, device, devID = save_tcx_to_csv(r_path_filename, w_path_filename, column_types, column_names)
+            activity_types = np.vstack([activity_types,[sport,device,devID]])
             file_number = file_number + 1
         else:
             break
@@ -82,13 +85,13 @@ def save_tcx_to_csv(read: str, write: str, types: [(str,type)], names: str) -> s
     @param names: Data variable names for .csv header row. Values separated by semicolon.
     @return: String/Name of the saved sport activity
     """
-    sport, tp_array = tcx_trackpoints_to_numpy(read, types)
+    sport, device, devID, tp_array = tcx_trackpoints_to_numpy(read, types)
     write = str(Path(write).with_suffix('.csv'))
     print("Read from: " + read + "\nWrite to: " + write)
     np.savetxt(write, tp_array, delimiter=";", fmt='% s', header=names, comments="")
 
     # Let's return activity type since we won't handle it here
-    return sport
+    return (sport, device, devID)
 
 
 def save_tcxset_to_csv(root: str, read: str, write: str, types: [(str,type)], names: str, exers: int = 0) -> object:
@@ -106,5 +109,5 @@ def save_tcxset_to_csv(root: str, read: str, write: str, types: [(str,type)], na
     print(activity_types)
     write = str(Path(root + write + "activity_types.csv"))
     print("\nSaving activity types to: " + write)
-    np.savetxt(write, activity_types, delimiter=";", fmt='% s', header="activity_name", comments="")
+    np.savetxt(write, activity_types, delimiter=";", fmt='% s', header="activity_name, device, devID", comments="")
 

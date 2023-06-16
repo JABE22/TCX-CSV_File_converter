@@ -62,12 +62,11 @@ class TCXTrackPoint(object):
 
 
 class TCXExercise:
-    def __init__(self, trackpoints: [TCXTrackPoint]=None, activity_type: str=None, calories: int=None,
-                 hr_avg: float = None, hr_max: float = None, hr_min=None, max_speed: float = None,
-                 avg_speed: float = None, start_time: datetime = None, end_time: datetime = None,
-                 duration: float = None, cadence_avg: float = None, cadence_max: float = None, ascent: float = None,
-                 descent: float = None, distance: float = None, altitude_avg: float = None, altitude_min: float = None,
-                 altitude_max: float = None):
+    def __init__(self, trackpoints: [TCXTrackPoint]=None, device: str=None, devID: str=None, activity_type: str=None,
+                 calories: int=None, hr_avg: float = None, hr_max: float = None, hr_min=None, max_speed: float = None,
+                 avg_speed: float = None, start_time: datetime = None, end_time: datetime = None, duration: float = None,
+                 cadence_avg: float = None, cadence_max: float = None, ascent: float = None, descent: float = None,
+                 distance: float = None, altitude_avg: float = None, altitude_min: float = None, altitude_max: float = None):
         """
         @param trackpoints: List of TCXTrackPoint objects
         @param activity_type: sport string
@@ -91,6 +90,8 @@ class TCXExercise:
 
         self.trackpoints = trackpoints
         self.activity_type = activity_type
+        self.device = device
+        self.devID = devID
         self.calories = calories
         self.hr_avg = hr_avg
         self.hr_max = hr_max
@@ -132,6 +133,15 @@ class TCXReader:
                 for activity in activities:
                     if activity.tag == GARMIN_XML_SCHEMA + 'Activity':
                         tcx_exercise.activity_type = activity.attrib['Sport']
+                        # Device model details
+                        for creator in activity:
+                            if creator.tag == GARMIN_XML_SCHEMA + 'Creator':
+                                for name in creator:
+                                    if name.tag == GARMIN_XML_SCHEMA + 'Name':
+                                        tcx_exercise.device = str(name.text)
+                                    if name.tag == GARMIN_XML_SCHEMA + 'ProductID':
+                                        tcx_exercise.devID = str(name.text)
+                        # Iterating through laps of activity
                         for lap in activity:
                             if lap.tag == GARMIN_XML_SCHEMA + 'Lap':
                                 for track in lap:

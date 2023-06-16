@@ -14,8 +14,9 @@ class Dir(Enum):
     This enum class stores file paths for specific data science project
     """
     # General dataset locations
-    TCX_PATH = "/TCXDATA/"
-    CSV_PATH = "/CSVDATA/"
+    ROOT_PATH = "DATA/"
+    TCX_PATH = "DATA/TCXDATA/"
+    CSV_PATH = "DATA/CSVDATA/TEST/"
     TCX_PATH_SET1 = "TCXDATA/SET1/"
     CSV_PATH_SET1 = "CSVDATA/SET1/"
     # Half Marathon activity locations and details
