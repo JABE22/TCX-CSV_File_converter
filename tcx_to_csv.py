@@ -29,49 +29,54 @@ def main():
     activity_number = 0
 
     if len(args) < 1:
-        print('Exactly two command line arguments or "--help" are required!')
-        print("--Also, only two first arguments are noticed, others are ignored")
+        print('At least one command line argument or "--help" required!')
+        print("--Two first arguments are noticed (for command '-m' three), others are ignored")
     else:
         c_type = args[0]
 
-    if c_type == '--help':
-        printInfo()
-    elif c_type == '-s':
-        if len(args) > 1:
-            # Saving single TCX activity to CSV file
-            filename = args[1]
-            time_stamp = datetime.now()
-            save_tcx_to_csv(Dir.TCX_PATH.value + filename, Dir.CSV_PATH.value + os.path.basename(filename),
-                            Dir.COLUMN_TYPES_SINGLE.value, Dir.NAMES_SINGLE.value)
-            print("Single TCXExercise processing time: " + str(datetime.now() - time_stamp))
-        else:
-            print("Missing argument: [filename].tcx")
-    elif c_type == '-m':
-        if len(args) > 1:
-            if len(args) == 3:
-                activity_number = int(args[2])
+        if c_type == '--help':
+            printInfo()
+
+        elif c_type == '-s':
+            if len(args) > 1:
+                # Saving single TCX activity to CSV file
+                filename = args[1]
+                time_stamp = datetime.now()
+                save_tcx_to_csv(Dir.TCX_PATH.value + filename, Dir.CSV_PATH.value + os.path.basename(filename),
+                                Dir.COLUMN_TYPES_SINGLE.value, Dir.NAMES_SINGLE.value)
+                print("Single TCXExercise processing time: " + str(datetime.now() - time_stamp))
             else:
+                print("Missing argument: [filename].tcx")
+
+        elif c_type == '-m':
+            if len(args) == 1:
+                print("Missing argument: [read_from_path]...)")
+                print("Using default path: " + Dir.ROOT_PATH.value)
+                root_path = Dir.ROOT_PATH.value
                 activity_number = 2
+            elif len(args) == 2:
+                root_path = str(args[1])
+                activity_number = 2
+            else:
+                root_path = str(args[1])
+                activity_number = int(args[2])
             # Saving set of TCX activities to CSV file
-            root_path = args[1]
             time_stamp = datetime.now()
             # File paths
-            print(root_path)
-            print(Dir.TCX_PATH_SET1.value)
-            print(Dir.CSV_PATH_SET1.value)
-            #
+            print("File path setup:")
+            print("Root: " + root_path)
+            print("Read: " + Dir.TCX_PATH_SET1.value)
+            print("Write: " + Dir.CSV_PATH_SET1.value)
             save_tcxset_to_csv(root_path, Dir.TCX_PATH_SET1.value, Dir.CSV_PATH_SET1.value,
-                               Dir.COLUMN_TYPES_SET.value, Dir.NAMES_SET.value, 12)
+                               Dir.COLUMN_TYPES_SET.value, Dir.NAMES_SET.value, activity_number)
             print("\nSet of TCXExercises processing time: " + str(datetime.now() - time_stamp))
         else:
-            print("Missing argument: [read_from_path]... Using default path: " + Dir.ROOT_PATH)
-    else:
-        print("Unknown command: " + str(c_type))
+            print("Unknown command: " + str(c_type))
 
 
 def printInfo():
     print("* To convert one .TCX file, give arguments: [-s] [filename].tcx")
-    print("  -- File will be read from the location DATA/TCXDATA/SET1/[filename].tcx")
+    print("  -- File will be read from the location DATA/TCXDATA/[path_filename].tcx")
     print("  -- File will be written to the location DATA/CSVDATA/TEST/[filename].csv")
     print("* To convert set of .TCX files, give arguments: [-m] [read_from_path]")
     print("  -- Set of TCX files will be saved with same name as tcx files (except .tcx -> .csv)")
